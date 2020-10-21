@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStore_API.Data
+namespace API.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>aspnet-BookStore_API-1EB16A0E-2A57-4310-9A17-14336716F222</UserSecretsId>
-    <RootNamespace>BookStore_API</RootNamespace>
+    <UserSecretsId>aspnet-API-1EB16A0E-2A57-4310-9A17-14336716F222</UserSecretsId>
+    <RootNamespace>API</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BookStore_API.Data.Migrations
+namespace API.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {
