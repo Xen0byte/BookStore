@@ -34,7 +34,7 @@ namespace API
                 {
                     Title = "Book Store API",
                     Version = "v1",
-                    Description = "Proof Of Concept Book Store API"
+                    Description = "Example Book Store API Project"
                 });
             });
 
