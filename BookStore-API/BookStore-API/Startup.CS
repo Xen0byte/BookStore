@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using API.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +39,11 @@ namespace API
                     Version = "v1",
                     Description = "Example Book Store API Project"
                 });
+
+                var xfile = $"{Assembly.GetExecutingAssembly().GetName().Name}.XML";
+                var xpath = Path.Combine(AppContext.BaseDirectory, xfile);
+
+                options.IncludeXmlComments(xpath);
             });
 
             services.AddControllers();
@@ -57,7 +65,11 @@ namespace API
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "Book Store API"); });
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Book Store API");
+                options.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
