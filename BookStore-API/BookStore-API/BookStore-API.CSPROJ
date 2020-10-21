@@ -7,24 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\ApplicationDbContext.CS!" />
-    <None Remove="Data\Migrations\00000000000000_CreateIdentitySchema.CS!" />
-    <None Remove="Data\Migrations\00000000000000_CreateIdentitySchema.Designer.CS!" />
-    <None Remove="Data\Migrations\ApplicationDbContextModelSnapshot.CS!" />
-    <None Remove="Program.CS!" />
-    <None Remove="Startup.CS!" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Data\ApplicationDbContext.CS!" />
-    <Compile Include="Data\Migrations\00000000000000_CreateIdentitySchema.CS!" />
-    <Compile Include="Data\Migrations\00000000000000_CreateIdentitySchema.Designer.CS!" />
-    <Compile Include="Data\Migrations\ApplicationDbContextModelSnapshot.CS!" />
-    <Compile Include="Program.CS!" />
-    <Compile Include="Startup.CS!" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.9" />
