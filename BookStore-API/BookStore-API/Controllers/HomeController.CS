@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using API.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -10,6 +11,13 @@ namespace API.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
+        private readonly ILoggerService _logger;
+
+        public HomeController(ILoggerService logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         ///     Gets The Controller
         /// </summary>
@@ -17,6 +25,7 @@ namespace API.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            _logger.LogInfo("Accessed Home Controller");
             return new[] {"first-placeholder", "second-placeholder"};
         }
 
@@ -28,6 +37,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public string Get(int id)
         {
+            _logger.LogDebug("Got A Value");
             return $"Got {id}";
         }
 
@@ -38,6 +48,7 @@ namespace API.Controllers
         [HttpPost]
         public string Post([FromBody] string value)
         {
+            _logger.LogError("This Is An Error");
             return $"Posted {value}";
         }
 
@@ -49,6 +60,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public string Put(int id, [FromBody] string value)
         {
+            _logger.LogWarn("This Is A Warning");
             return $"Put {value} Into {id}";
         }
 
