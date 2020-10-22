@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     /// <summary>
-    ///     This Is A Test API Controller
+    ///     The Book Store's Home API Controller
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class HomeController : ControllerBase
     {
         /// <summary>
-        ///     GET: api/controller
+        ///     Gets The Controller
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -21,7 +21,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        ///     GET api/controller/id
+        ///     Gets The ID At The Controller
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -32,7 +32,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        ///     POST api/controller
+        ///     Posts A Value To The Controller
         /// </summary>
         /// <param name="value"></param>
         [HttpPost]
@@ -42,7 +42,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        ///     PUT api/controller/id
+        ///     Puts A Value To The ID At The Controller
         /// </summary>
         /// <param name="id"></param>
         /// <param name="value"></param>
@@ -53,7 +53,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        ///     DELETE api/controller/id
+        ///     Deletes The ID At The Controller
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete("{id}")]
