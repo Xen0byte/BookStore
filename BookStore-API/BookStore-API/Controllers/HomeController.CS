@@ -71,6 +71,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public string Delete(int id)
         {
+            _logger.LogWarn("Something Fatal Has Happened");
             return $"Deleted {id}";
         }
     }
