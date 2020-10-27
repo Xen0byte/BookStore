@@ -11,6 +11,5 @@ namespace API.Contracts
         Task<bool> Update(T entity);
         Task<bool> Delete(T entity);
         Task<bool> Save();
-
     }
 }
