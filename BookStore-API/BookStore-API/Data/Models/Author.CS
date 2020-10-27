@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace API.Data
+namespace API.Data.Models
 {
     [Table("Authors")]
     public class Author
