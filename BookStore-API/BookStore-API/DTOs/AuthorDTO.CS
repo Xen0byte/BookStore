@@ -1,0 +1,14 @@
+﻿using System.Collections.Generic;
+
+namespace API.DTOs
+{
+    public class AuthorDTO
+    {
+        public int ID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Bio { get; set; }
+
+        public virtual IList<BookDTO> Books { get; set; }
+    }
+}

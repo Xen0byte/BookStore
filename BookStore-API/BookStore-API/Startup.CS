@@ -3,7 +3,9 @@ using System.IO;
 using System.Reflection;
 using API.Contracts;
 using API.Data;
+using API.Mappings;
 using API.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +42,8 @@ namespace API
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
+
+            services.AddAutoMapper(typeof(Maps));
 
             services.AddSwaggerGen(options =>
             {
