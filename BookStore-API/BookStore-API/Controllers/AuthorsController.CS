@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Contracts;
+using API.Data.Models;
 using API.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -77,6 +78,48 @@ namespace API.Controllers
                 var response = _mapper.Map<AuthorDTO>(author);
                 _logger.LogInfo($"Successfully Got Author ID {id}");
                 return Ok(response);
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
+        ///     Creates An Author
+        /// </summary>
+        /// <param name="authorCreateDTO"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create([FromBody] AuthorCreateDTO authorCreateDTO)
+        {
+            try
+            {
+                _logger.LogInfo("Author Submission Attempted");
+
+                if (authorCreateDTO == null)
+                {
+                    _logger.LogWarn("Empty Submission Was Made");
+                    return BadRequest(ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarn("Invalid Or Incomplete Author Data Submitted");
+                    return BadRequest(ModelState);
+                }
+
+                var author = _mapper.Map<Author>(authorCreateDTO);
+                var isSuccess = await _authorRepository.Create(author);
+
+                if (!isSuccess) return InternalError("Author Creation Failed");
+
+                _logger.LogInfo("Author Successfully Created");
+                return Created("Create", new {author});
             }
 
             catch (Exception e)
