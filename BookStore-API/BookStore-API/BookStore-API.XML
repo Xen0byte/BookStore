@@ -4,6 +4,17 @@
         <name>BookStore-API</name>
     </assembly>
     <members>
+        <member name="T:API.Controllers.AuthorsController">
+            <summary>
+                Endpoint Used To Interact With The Authors In The Book Store's Database
+            </summary>
+        </member>
+        <member name="M:API.Controllers.AuthorsController.GetAuthors">
+            <summary>
+                Get All Authors
+            </summary>
+            <returns>List Of Authors</returns>
+        </member>
         <member name="T:API.Controllers.HomeController">
             <summary>
                 The Book Store's Home API Controller
