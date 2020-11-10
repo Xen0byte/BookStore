@@ -33,6 +33,8 @@ namespace API.Controllers
         /// </summary>
         /// <returns>List Of Authors</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAuthors()
         {
             try
@@ -40,15 +42,53 @@ namespace API.Controllers
                 _logger.LogInfo("Attempted Get All Authors");
                 var authors = await _authorRepository.FindAll();
                 var response = _mapper.Map<IList<AuthorDTO>>(authors);
-                _logger.LogInfo("Successfully Retrieved All Authors");
+                _logger.LogInfo("Successfully Got All Authors");
                 return Ok(response);
             }
 
             catch (Exception e)
             {
-                _logger.LogError($"{e.Message} - {e.InnerException}");
-                return StatusCode(500, "Something Went Wrong... Oops!");
+                return InternalError($"{e.Message} - {e.InnerException}");
             }
+        }
+
+        /// <summary>
+        ///     Get Author By ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Author</returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAuthor(int id)
+        {
+            try
+            {
+                _logger.LogInfo($"Attempted Get Author ID {id}");
+                var author = await _authorRepository.FindById(id);
+
+                if (author == null)
+                {
+                    _logger.LogWarn($"Author ID {id} Was Not Found");
+                    return NotFound();
+                }
+
+                var response = _mapper.Map<AuthorDTO>(author);
+                _logger.LogInfo($"Successfully Got Author ID {id}");
+                return Ok(response);
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{e.Message} - {e.InnerException}");
+            }
+        }
+
+        private ObjectResult InternalError(string message)
+        {
+            _logger.LogError(message);
+            return StatusCode(500, "Something Went Wrong... Oops!");
         }
     }
 }
