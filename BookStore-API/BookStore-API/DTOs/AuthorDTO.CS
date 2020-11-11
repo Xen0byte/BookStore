@@ -15,10 +15,21 @@ namespace API.DTOs
 
     public class AuthorCreateDTO
     {
-        [Required]
-        public string FirstName { get; set; }
-        [Required]
-        public string LastName { get; set; }
+        [Required] public string FirstName { get; set; }
+
+        [Required] public string LastName { get; set; }
+
+        public string Bio { get; set; }
+    }
+
+    public class AuthorUpdateDTO
+    {
+        [Required] public int ID { get; set; }
+
+        [Required] public string FirstName { get; set; }
+
+        [Required] public string LastName { get; set; }
+
         public string Bio { get; set; }
     }
 }

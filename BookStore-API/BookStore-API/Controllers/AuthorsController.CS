@@ -44,6 +44,7 @@ namespace API.Controllers
                 var authors = await _authorRepository.FindAll();
                 var response = _mapper.Map<IList<AuthorDTO>>(authors);
                 _logger.LogInfo("Successfully Got All Authors");
+
                 return Ok(response);
             }
 
@@ -77,6 +78,7 @@ namespace API.Controllers
 
                 var response = _mapper.Map<AuthorDTO>(author);
                 _logger.LogInfo($"Successfully Got Author ID {id}");
+
                 return Ok(response);
             }
 
@@ -119,7 +121,50 @@ namespace API.Controllers
                 if (!isSuccess) return InternalError("Author Creation Failed");
 
                 _logger.LogInfo("Author Successfully Created");
+
                 return Created("Create", new {author});
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
+        ///     Updates An Author Via PUT (https://rapidapi.com/blog/put-vs-patch/)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="authorUpdateDTO"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update(int id, [FromBody] AuthorUpdateDTO authorUpdateDTO)
+        {
+            try
+            {
+                _logger.LogInfo($"Author ID {id} Update Attempted");
+
+                if (id < 1 || authorUpdateDTO == null || id != authorUpdateDTO.ID)
+                {
+                    _logger.LogWarn("Missing Data Or Invalid Author ID");
+                    return BadRequest(ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarn("Invalid Or Incomplete Author Data Submitted");
+                    return BadRequest(ModelState);
+                }
+
+                var author = _mapper.Map<Author>(authorUpdateDTO);
+                var isSuccess = await _authorRepository.Update(author);
+
+                if (!isSuccess) return InternalError("Update Operation Failed");
+
+                return NoContent();
             }
 
             catch (Exception e)
