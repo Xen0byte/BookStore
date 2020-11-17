@@ -89,7 +89,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        ///     Creates An Author
+        ///     Create Author
         /// </summary>
         /// <param name="authorCreateDTO"></param>
         /// <returns></returns>
@@ -132,7 +132,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        ///     Updates An Author Via PUT (https://rapidapi.com/blog/put-vs-patch/)
+        ///     Update Author By ID (https://rapidapi.com/blog/put-vs-patch/)
         /// </summary>
         /// <param name="id"></param>
         /// <param name="authorUpdateDTO"></param>
@@ -153,6 +153,14 @@ namespace API.Controllers
                     return BadRequest(ModelState);
                 }
 
+                var exists = await _authorRepository.Exists(id);
+
+                if (!exists)
+                {
+                    _logger.LogWarn($"Author ID {id} Not Found");
+                    return NotFound();
+                }
+
                 if (!ModelState.IsValid)
                 {
                     _logger.LogWarn("Invalid Or Incomplete Author Data Submitted");
@@ -164,6 +172,51 @@ namespace API.Controllers
 
                 if (!isSuccess) return InternalError("Update Operation Failed");
 
+                _logger.LogInfo($"Author ID {id} Successfully Updated");
+                return NoContent();
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
+        ///     Delete Author By ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                _logger.LogInfo($"Author ID {id} Delete Attempted");
+                if (id < 1)
+                {
+                    _logger.LogWarn("Invalid Author ID");
+                    return BadRequest();
+                }
+
+                var exists = await _authorRepository.Exists(id);
+
+                if (!exists)
+                {
+                    _logger.LogWarn($"Author ID {id} Not Found");
+                    return NotFound();
+                }
+
+                var author = await _authorRepository.FindById(id);
+
+                var isSuccess = await _authorRepository.Delete(author);
+
+                if (!isSuccess) return InternalError("Author Delete Failed");
+
+                _logger.LogInfo($"Author ID {id} Successfully Deleted");
                 return NoContent();
             }
 

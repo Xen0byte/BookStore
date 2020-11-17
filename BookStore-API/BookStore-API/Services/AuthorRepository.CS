@@ -28,6 +28,11 @@ namespace API.Services
             return author;
         }
 
+        public async Task<bool> Exists(int id)
+        {
+            return await _db.Authors.AnyAsync(a => a.ID == id);
+        }
+
         public async Task<bool> Create(Author entity)
         {
             await _db.Authors.AddAsync(entity);
