@@ -38,19 +38,21 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAuthors()
         {
+            var location = GetControllerActionNames();
+
             try
             {
-                _logger.LogInfo("Attempted Get All Authors");
+                _logger.LogInfo($"{location}: Attempted");
                 var authors = await _authorRepository.FindAll();
                 var response = _mapper.Map<IList<AuthorDTO>>(authors);
-                _logger.LogInfo("Successfully Got All Authors");
+                _logger.LogInfo($"{location}: Successful");
 
                 return Ok(response);
             }
 
             catch (Exception e)
             {
-                return InternalError($"{e.Message} - {e.InnerException}");
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -59,32 +61,34 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Author</returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAuthor(int id)
         {
+            var location = GetControllerActionNames();
+
             try
             {
-                _logger.LogInfo($"Attempted Get Author ID {id}");
+                _logger.LogInfo($"{location}: Attempted For ID {id}");
                 var author = await _authorRepository.FindById(id);
 
                 if (author == null)
                 {
-                    _logger.LogWarn($"Author ID {id} Was Not Found");
+                    _logger.LogWarn($"{location}: ID {id} Not Found");
                     return NotFound();
                 }
 
                 var response = _mapper.Map<AuthorDTO>(author);
-                _logger.LogInfo($"Successfully Got Author ID {id}");
+                _logger.LogInfo($"{location}: Successful For ID {id}");
 
                 return Ok(response);
             }
 
             catch (Exception e)
             {
-                return InternalError($"{e.Message} - {e.InnerException}");
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -99,35 +103,37 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] AuthorCreateDTO authorCreateDTO)
         {
+            var location = GetControllerActionNames();
+
             try
             {
-                _logger.LogInfo("Author Submission Attempted");
+                _logger.LogInfo($"{location}: Attempted");
 
                 if (authorCreateDTO == null)
                 {
-                    _logger.LogWarn("Empty Submission Was Made");
+                    _logger.LogWarn($"{location}: Empty Submission Was Made");
                     return BadRequest(ModelState);
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarn("Invalid Or Incomplete Author Data Submitted");
+                    _logger.LogWarn($"{location}: Invalid Or Incomplete Data Submitted");
                     return BadRequest(ModelState);
                 }
 
                 var author = _mapper.Map<Author>(authorCreateDTO);
                 var isSuccess = await _authorRepository.Create(author);
 
-                if (!isSuccess) return InternalError("Author Creation Failed");
+                if (!isSuccess) return InternalError($"{location}: Failed");
 
-                _logger.LogInfo("Author Successfully Created");
+                _logger.LogInfo($"{location}: Successful");
 
                 return Created("Create", new {author});
             }
 
             catch (Exception e)
             {
-                return InternalError($"{e.Message} - {e.InnerException}");
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -137,19 +143,22 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <param name="authorUpdateDTO"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, [FromBody] AuthorUpdateDTO authorUpdateDTO)
         {
+            var location = GetControllerActionNames();
+
             try
             {
-                _logger.LogInfo($"Author ID {id} Update Attempted");
+                _logger.LogInfo($"{location}: Attempted For ID {id}");
 
                 if (id < 1 || authorUpdateDTO == null || id != authorUpdateDTO.ID)
                 {
-                    _logger.LogWarn("Missing Data Or Invalid Author ID");
+                    _logger.LogWarn($"{location}: Missing Data Or Invalid ID");
                     return BadRequest(ModelState);
                 }
 
@@ -157,28 +166,28 @@ namespace API.Controllers
 
                 if (!exists)
                 {
-                    _logger.LogWarn($"Author ID {id} Not Found");
+                    _logger.LogWarn($"{location}: ID {id} Not Found");
                     return NotFound();
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarn("Invalid Or Incomplete Author Data Submitted");
+                    _logger.LogWarn($"{location}: Invalid Or Incomplete Data Submitted");
                     return BadRequest(ModelState);
                 }
 
                 var author = _mapper.Map<Author>(authorUpdateDTO);
                 var isSuccess = await _authorRepository.Update(author);
 
-                if (!isSuccess) return InternalError("Update Operation Failed");
+                if (!isSuccess) return InternalError($"{location}: Failed");
 
-                _logger.LogInfo($"Author ID {id} Successfully Updated");
+                _logger.LogInfo($"{location}: Successful For ID {id}");
                 return NoContent();
             }
 
             catch (Exception e)
             {
-                return InternalError($"{e.Message} - {e.InnerException}");
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -187,18 +196,21 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
+            var location = GetControllerActionNames();
+
             try
             {
-                _logger.LogInfo($"Author ID {id} Delete Attempted");
+                _logger.LogInfo($"{location}: Attempted For ID {id}");
                 if (id < 1)
                 {
-                    _logger.LogWarn("Invalid Author ID");
+                    _logger.LogWarn($"{location}: Invalid ID");
                     return BadRequest();
                 }
 
@@ -206,7 +218,7 @@ namespace API.Controllers
 
                 if (!exists)
                 {
-                    _logger.LogWarn($"Author ID {id} Not Found");
+                    _logger.LogWarn($"{location}: ID {id} Not Found");
                     return NotFound();
                 }
 
@@ -214,16 +226,24 @@ namespace API.Controllers
 
                 var isSuccess = await _authorRepository.Delete(author);
 
-                if (!isSuccess) return InternalError("Author Delete Failed");
+                if (!isSuccess) return InternalError($"{location}: Failed");
 
-                _logger.LogInfo($"Author ID {id} Successfully Deleted");
+                _logger.LogInfo($"{location}: Successful For ID {id}");
                 return NoContent();
             }
 
             catch (Exception e)
             {
-                return InternalError($"{e.Message} - {e.InnerException}");
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
             }
+        }
+
+        private string GetControllerActionNames()
+        {
+            var controller = ControllerContext.ActionDescriptor.ControllerName;
+            var action = ControllerContext.ActionDescriptor.ActionName;
+
+            return $"{controller} - {action}";
         }
 
         private ObjectResult InternalError(string message)

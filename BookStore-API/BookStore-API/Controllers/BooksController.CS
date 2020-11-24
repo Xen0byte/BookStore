@@ -1,5 +1,11 @@
-﻿using API.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using API.Contracts;
+using API.Data.Models;
+using API.DTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -20,6 +26,229 @@ namespace API.Controllers
             _bookRepository = bookRepository;
             _logger = logger;
             _mapper = mapper;
+        }
+
+        /// <summary>
+        ///     Get All Books
+        /// </summary>
+        /// <returns>List Of Books</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetBooks()
+        {
+            var location = GetControllerActionNames();
+
+            try
+            {
+                _logger.LogInfo($"{location}: Attempted");
+                var books = await _bookRepository.FindAll();
+                var response = _mapper.Map<IList<BookDTO>>(books);
+                _logger.LogInfo($"{location}: Successful");
+
+                return Ok(response);
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
+        ///     Get Book By ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Book</returns>
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetBook(int id)
+        {
+            var location = GetControllerActionNames();
+
+            try
+            {
+                _logger.LogInfo($"{location}: Attempted For ID {id}");
+                var book = await _bookRepository.FindById(id);
+
+                if (book == null)
+                {
+                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    return NotFound();
+                }
+
+                var response = _mapper.Map<BookDTO>(book);
+                _logger.LogInfo($"{location}: Successful For ID {id}");
+
+                return Ok(response);
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
+        ///     Create Book
+        /// </summary>
+        /// <param name="bookCreateDTO"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create([FromBody] BookCreateDTO bookCreateDTO)
+        {
+            var location = GetControllerActionNames();
+
+            try
+            {
+                _logger.LogInfo($"{location}: Attempted");
+
+                if (bookCreateDTO == null)
+                {
+                    _logger.LogWarn($"{location}: Empty Submission Was Made");
+                    return BadRequest(ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarn($"{location}: Invalid Or Incomplete Data Submitted");
+                    return BadRequest(ModelState);
+                }
+
+                var book = _mapper.Map<Book>(bookCreateDTO);
+                var isSuccess = await _bookRepository.Create(book);
+
+                if (!isSuccess) return InternalError($"{location}: Failed");
+
+                _logger.LogInfo($"{location}: Successful");
+
+                return Created("Create", new { book });
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
+        ///     Update Book By ID (https://rapidapi.com/blog/put-vs-patch/)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="bookUpdateDTO"></param>
+        /// <returns></returns>
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update(int id, [FromBody] BookUpdateDTO bookUpdateDTO)
+        {
+            var location = GetControllerActionNames();
+
+            try
+            {
+                _logger.LogInfo($"{location}: Attempted For ID {id}");
+
+                if (id < 1 || bookUpdateDTO == null || id != bookUpdateDTO.ID)
+                {
+                    _logger.LogWarn($"{location}: Missing Data Or Invalid ID");
+                    return BadRequest(ModelState);
+                }
+
+                var exists = await _bookRepository.Exists(id);
+
+                if (!exists)
+                {
+                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    return NotFound();
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarn($"{location}: Invalid Or Incomplete Data Submitted");
+                    return BadRequest(ModelState);
+                }
+
+                var book = _mapper.Map<Book>(bookUpdateDTO);
+                var isSuccess = await _bookRepository.Update(book);
+
+                if (!isSuccess) return InternalError($"{location}: Failed");
+
+                _logger.LogInfo($"{location}: Successful For ID {id}");
+                return NoContent();
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
+        ///     Delete Book By ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var location = GetControllerActionNames();
+
+            try
+            {
+                _logger.LogInfo($"{location}: Attempted For ID {id}");
+                if (id < 1)
+                {
+                    _logger.LogWarn($"{location}: Invalid ID");
+                    return BadRequest();
+                }
+
+                var exists = await _bookRepository.Exists(id);
+
+                if (!exists)
+                {
+                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    return NotFound();
+                }
+
+                var book = await _bookRepository.FindById(id);
+
+                var isSuccess = await _bookRepository.Delete(book);
+
+                if (!isSuccess) return InternalError($"{location}: Failed");
+
+                _logger.LogInfo($"{location}: Successful For ID {id}");
+                return NoContent();
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+            }
+        }
+
+        private string GetControllerActionNames()
+        {
+            var controller = ControllerContext.ActionDescriptor.ControllerName;
+            var action = ControllerContext.ActionDescriptor.ActionName;
+
+            return $"{controller} - {action}";
+        }
+
+        private ObjectResult InternalError(string message)
+        {
+            _logger.LogError(message);
+            return StatusCode(500, "Something Went Wrong... Oops!");
         }
     }
 }
