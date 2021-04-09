@@ -5,7 +5,6 @@ using API.Contracts;
 using API.Data;
 using API.Mappings;
 using API.Services;
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -26,13 +25,14 @@ namespace API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This Method Gets Called By The Runtime. Use This Method To Add Services To The Container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddCors(options =>
@@ -67,8 +67,8 @@ namespace API
             services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        // This Method Gets Called By The Runtime. Use This Method To Configure The HTTP Request Pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -78,8 +78,7 @@ namespace API
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts();  // The Default HSTS Value Is 30 Days. You May Want To Change This For Production Scenarios. (https://aka.ms/aspnetcore-hsts)
             }
 
             app.UseSwagger();
@@ -92,6 +91,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
+
+            SeedData.Seed(roleManager, userManager).Wait();
 
             app.UseRouting();
 
