@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using API.Contracts;
 using API.DTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -12,11 +12,12 @@ namespace API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly ILoggerService _logger;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly ILoggerService _logger;
 
-        public UsersController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILoggerService logger)
+        public UsersController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager,
+            ILoggerService logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;

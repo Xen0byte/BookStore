@@ -68,7 +68,8 @@ namespace API
         }
 
         // This Method Gets Called By The Runtime. Use This Method To Configure The HTTP Request Pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -78,7 +79,7 @@ namespace API
             else
             {
                 app.UseExceptionHandler("/Error");
-                app.UseHsts();  // The Default HSTS Value Is 30 Days. You May Want To Change This For Production Scenarios. (https://aka.ms/aspnetcore-hsts)
+                app.UseHsts(); // The Default HSTS Value Is 30 Days. You May Want To Change This For Production Scenarios. (https://aka.ms/aspnetcore-hsts)
             }
 
             app.UseSwagger();

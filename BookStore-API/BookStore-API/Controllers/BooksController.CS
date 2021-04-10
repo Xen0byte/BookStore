@@ -127,7 +127,7 @@ namespace API.Controllers
 
                 _logger.LogInfo($"{controllerAction}: Successful");
 
-                return Created("Create", new { book });
+                return Created("Create", new {book});
             }
 
             catch (Exception e)

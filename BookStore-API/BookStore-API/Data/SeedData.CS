@@ -23,10 +23,7 @@ namespace API.Data
 
                 var result = await userManager.CreateAsync(user, "P@ssword00");
 
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(user, "Administrator");
-                }
+                if (result.Succeeded) await userManager.AddToRoleAsync(user, "Administrator");
             }
 
             for (var i = 1; i <= 10; i++)
@@ -41,10 +38,7 @@ namespace API.Data
 
                 var result = await userManager.CreateAsync(user, $"P@ssword{i:D2}");
 
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(user, "Customer");
-                }
+                if (result.Succeeded) await userManager.AddToRoleAsync(user, "Customer");
             }
         }
 
