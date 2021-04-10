@@ -44,6 +44,46 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="T:API.Controllers.BooksController">
+            <summary>
+                Endpoint Used To Interact With The Books In The Store's Database
+            </summary>
+        </member>
+        <member name="M:API.Controllers.BooksController.GetBooks">
+            <summary>
+                Get All Books
+            </summary>
+            <returns>List Of Books</returns>
+        </member>
+        <member name="M:API.Controllers.BooksController.GetBook(System.Int32)">
+            <summary>
+                Get Book By ID
+            </summary>
+            <param name="id"></param>
+            <returns>Book</returns>
+        </member>
+        <member name="M:API.Controllers.BooksController.Create(API.DTOs.BookCreateDTO)">
+            <summary>
+                Create Book
+            </summary>
+            <param name="bookCreateDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:API.Controllers.BooksController.Update(System.Int32,API.DTOs.BookUpdateDTO)">
+            <summary>
+                Update Book By ID (https://rapidapi.com/blog/put-vs-patch/)
+            </summary>
+            <param name="id"></param>
+            <param name="bookUpdateDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:API.Controllers.BooksController.Delete(System.Int32)">
+            <summary>
+                Delete Book By ID
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="T:API.Controllers.HomeController">
             <summary>
                 The Book Store's Home API Controller
@@ -80,6 +120,13 @@
                 Deletes The ID At The Controller
             </summary>
             <param name="id"></param>
+        </member>
+        <member name="M:API.Controllers.UsersController.Login(API.DTOs.UserDTO)">
+            <summary>
+                Log In
+            </summary>
+            <param name="userDTO"></param>
+            <returns>User</returns>
         </member>
     </members>
 </doc>
