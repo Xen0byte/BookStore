@@ -38,21 +38,21 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAuthors()
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted");
+                _logger.LogInfo($"{controllerAction}: Attempted");
                 var authors = await _authorRepository.FindAll();
                 var response = _mapper.Map<IList<AuthorDTO>>(authors);
-                _logger.LogInfo($"{location}: Successful");
+                _logger.LogInfo($"{controllerAction}: Successful");
 
                 return Ok(response);
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -67,28 +67,28 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAuthor(int id)
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Attempted For ID {id}");
                 var author = await _authorRepository.FindById(id);
 
                 if (author == null)
                 {
-                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    _logger.LogWarn($"{controllerAction}: ID {id} Not Found");
                     return NotFound();
                 }
 
                 var response = _mapper.Map<AuthorDTO>(author);
-                _logger.LogInfo($"{location}: Successful For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Successful For ID {id}");
 
                 return Ok(response);
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -103,37 +103,37 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] AuthorCreateDTO authorCreateDTO)
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted");
+                _logger.LogInfo($"{controllerAction}: Attempted");
 
                 if (authorCreateDTO == null)
                 {
-                    _logger.LogWarn($"{location}: Empty Submission Was Made");
+                    _logger.LogWarn($"{controllerAction}: Empty Submission Was Made");
                     return BadRequest(ModelState);
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarn($"{location}: Invalid Or Incomplete Data Submitted");
+                    _logger.LogWarn($"{controllerAction}: Invalid Or Incomplete Data Submitted");
                     return BadRequest(ModelState);
                 }
 
                 var author = _mapper.Map<Author>(authorCreateDTO);
                 var isSuccess = await _authorRepository.Create(author);
 
-                if (!isSuccess) return InternalError($"{location}: Failed");
+                if (!isSuccess) return InternalError($"{controllerAction}: Failed");
 
-                _logger.LogInfo($"{location}: Successful");
+                _logger.LogInfo($"{controllerAction}: Successful");
 
                 return Created("Create", new {author});
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -150,15 +150,15 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, [FromBody] AuthorUpdateDTO authorUpdateDTO)
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Attempted For ID {id}");
 
                 if (id < 1 || authorUpdateDTO == null || id != authorUpdateDTO.ID)
                 {
-                    _logger.LogWarn($"{location}: Missing Data Or Invalid ID");
+                    _logger.LogWarn($"{controllerAction}: Missing Data Or Invalid ID");
                     return BadRequest(ModelState);
                 }
 
@@ -166,28 +166,28 @@ namespace API.Controllers
 
                 if (!exists)
                 {
-                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    _logger.LogWarn($"{controllerAction}: ID {id} Not Found");
                     return NotFound();
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarn($"{location}: Invalid Or Incomplete Data Submitted");
+                    _logger.LogWarn($"{controllerAction}: Invalid Or Incomplete Data Submitted");
                     return BadRequest(ModelState);
                 }
 
                 var author = _mapper.Map<Author>(authorUpdateDTO);
                 var isSuccess = await _authorRepository.Update(author);
 
-                if (!isSuccess) return InternalError($"{location}: Failed");
+                if (!isSuccess) return InternalError($"{controllerAction}: Failed");
 
-                _logger.LogInfo($"{location}: Successful For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Successful For ID {id}");
                 return NoContent();
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -203,14 +203,14 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Attempted For ID {id}");
                 if (id < 1)
                 {
-                    _logger.LogWarn($"{location}: Invalid ID");
+                    _logger.LogWarn($"{controllerAction}: Invalid ID");
                     return BadRequest();
                 }
 
@@ -218,7 +218,7 @@ namespace API.Controllers
 
                 if (!exists)
                 {
-                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    _logger.LogWarn($"{controllerAction}: ID {id} Not Found");
                     return NotFound();
                 }
 
@@ -226,15 +226,15 @@ namespace API.Controllers
 
                 var isSuccess = await _authorRepository.Delete(author);
 
-                if (!isSuccess) return InternalError($"{location}: Failed");
+                if (!isSuccess) return InternalError($"{controllerAction}: Failed");
 
-                _logger.LogInfo($"{location}: Successful For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Successful For ID {id}");
                 return NoContent();
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 

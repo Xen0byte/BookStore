@@ -37,21 +37,21 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetBooks()
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted");
+                _logger.LogInfo($"{controllerAction}: Attempted");
                 var books = await _bookRepository.FindAll();
                 var response = _mapper.Map<IList<BookDTO>>(books);
-                _logger.LogInfo($"{location}: Successful");
+                _logger.LogInfo($"{controllerAction}: Successful");
 
                 return Ok(response);
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -66,28 +66,28 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetBook(int id)
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Attempted For ID {id}");
                 var book = await _bookRepository.FindById(id);
 
                 if (book == null)
                 {
-                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    _logger.LogWarn($"{controllerAction}: ID {id} Not Found");
                     return NotFound();
                 }
 
                 var response = _mapper.Map<BookDTO>(book);
-                _logger.LogInfo($"{location}: Successful For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Successful For ID {id}");
 
                 return Ok(response);
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -102,37 +102,37 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] BookCreateDTO bookCreateDTO)
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted");
+                _logger.LogInfo($"{controllerAction}: Attempted");
 
                 if (bookCreateDTO == null)
                 {
-                    _logger.LogWarn($"{location}: Empty Submission Was Made");
+                    _logger.LogWarn($"{controllerAction}: Empty Submission Was Made");
                     return BadRequest(ModelState);
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarn($"{location}: Invalid Or Incomplete Data Submitted");
+                    _logger.LogWarn($"{controllerAction}: Invalid Or Incomplete Data Submitted");
                     return BadRequest(ModelState);
                 }
 
                 var book = _mapper.Map<Book>(bookCreateDTO);
                 var isSuccess = await _bookRepository.Create(book);
 
-                if (!isSuccess) return InternalError($"{location}: Failed");
+                if (!isSuccess) return InternalError($"{controllerAction}: Failed");
 
-                _logger.LogInfo($"{location}: Successful");
+                _logger.LogInfo($"{controllerAction}: Successful");
 
                 return Created("Create", new { book });
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -149,15 +149,15 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, [FromBody] BookUpdateDTO bookUpdateDTO)
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Attempted For ID {id}");
 
                 if (id < 1 || bookUpdateDTO == null || id != bookUpdateDTO.ID)
                 {
-                    _logger.LogWarn($"{location}: Missing Data Or Invalid ID");
+                    _logger.LogWarn($"{controllerAction}: Missing Data Or Invalid ID");
                     return BadRequest(ModelState);
                 }
 
@@ -165,28 +165,28 @@ namespace API.Controllers
 
                 if (!exists)
                 {
-                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    _logger.LogWarn($"{controllerAction}: ID {id} Not Found");
                     return NotFound();
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarn($"{location}: Invalid Or Incomplete Data Submitted");
+                    _logger.LogWarn($"{controllerAction}: Invalid Or Incomplete Data Submitted");
                     return BadRequest(ModelState);
                 }
 
                 var book = _mapper.Map<Book>(bookUpdateDTO);
                 var isSuccess = await _bookRepository.Update(book);
 
-                if (!isSuccess) return InternalError($"{location}: Failed");
+                if (!isSuccess) return InternalError($"{controllerAction}: Failed");
 
-                _logger.LogInfo($"{location}: Successful For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Successful For ID {id}");
                 return NoContent();
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
@@ -202,14 +202,14 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
-            var location = GetControllerActionNames();
+            var controllerAction = GetControllerActionNames();
 
             try
             {
-                _logger.LogInfo($"{location}: Attempted For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Attempted For ID {id}");
                 if (id < 1)
                 {
-                    _logger.LogWarn($"{location}: Invalid ID");
+                    _logger.LogWarn($"{controllerAction}: Invalid ID");
                     return BadRequest();
                 }
 
@@ -217,7 +217,7 @@ namespace API.Controllers
 
                 if (!exists)
                 {
-                    _logger.LogWarn($"{location}: ID {id} Not Found");
+                    _logger.LogWarn($"{controllerAction}: ID {id} Not Found");
                     return NotFound();
                 }
 
@@ -225,15 +225,15 @@ namespace API.Controllers
 
                 var isSuccess = await _bookRepository.Delete(book);
 
-                if (!isSuccess) return InternalError($"{location}: Failed");
+                if (!isSuccess) return InternalError($"{controllerAction}: Failed");
 
-                _logger.LogInfo($"{location}: Successful For ID {id}");
+                _logger.LogInfo($"{controllerAction}: Successful For ID {id}");
                 return NoContent();
             }
 
             catch (Exception e)
             {
-                return InternalError($"{location}: {e.Message} - {e.InnerException}");
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
             }
         }
 
