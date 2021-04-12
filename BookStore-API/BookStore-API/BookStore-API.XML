@@ -122,6 +122,11 @@
 			</summary>
 			<param name="id"></param>
 		</member>
+		<member name="T:API.Controllers.UsersController">
+			<summary>
+				Endpoint For Book Store Authentication
+			</summary>
+		</member>
 		<member name="M:API.Controllers.UsersController.Login(API.DTOs.UserDTO)">
 			<summary>
 				Log In
