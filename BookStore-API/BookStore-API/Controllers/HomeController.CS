@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using API.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -23,6 +24,7 @@ namespace API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<string> Get()
         {
             _logger.LogInfo("Accessed Home Controller");
@@ -35,6 +37,7 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public string Get(int id)
         {
             _logger.LogDebug("Got A Value");
@@ -46,6 +49,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="value"></param>
         [HttpPost]
+        [AllowAnonymous]
         public string Post([FromBody] string value)
         {
             _logger.LogError("This Is An Error");
@@ -58,6 +62,7 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <param name="value"></param>
         [HttpPut("{id}")]
+        [AllowAnonymous]
         public string Put(int id, [FromBody] string value)
         {
             _logger.LogWarn("This Is A Warning");
@@ -69,6 +74,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         public string Delete(int id)
         {
             _logger.LogWarn("Something Fatal Has Happened");
