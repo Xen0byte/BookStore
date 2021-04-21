@@ -8,11 +8,11 @@ using UI.Contracts;
 
 namespace UI.Services
 {
-    public class CRUDService<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         private readonly IHttpClientFactory _client;
 
-        public CRUDService(IHttpClientFactory client)
+        public BaseRepository(IHttpClientFactory client)
         {
             _client = client;
         }
