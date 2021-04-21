@@ -1,6 +1,6 @@
 using System;
 
-namespace BookStore_UI.Data
+namespace UI.Data
 {
     public class WeatherForecast
     {

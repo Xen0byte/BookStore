@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.Data
+namespace UI.Data
 {
     public class WeatherForecastService
     {
