@@ -5,16 +5,6 @@
     <RootNamespace>UI</RootNamespace>
   </PropertyGroup>
 
-	<PropertyGroup>
-		<DocumentationFile>$(ProjectDir)BookStore-UI.XML</DocumentationFile>
-		<StartupObject>UI.Program</StartupObject>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<NoWarn>1591</NoWarn>
-		<WarningsAsErrors>NU1605</WarningsAsErrors>
-	</PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>

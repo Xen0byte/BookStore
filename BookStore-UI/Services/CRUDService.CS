@@ -49,7 +49,7 @@ namespace UI.Services
 
             if (obj is null) return false;
 
-            request.Content = new StringContent(JsonConvert.SerializeObject((obj)));
+            request.Content = new StringContent(JsonConvert.SerializeObject(obj));
 
             var client = _client.CreateClient();
             var response = await client.SendAsync(request);
