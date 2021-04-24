@@ -39,13 +39,63 @@ namespace API.Controllers
         }
 
         /// <summary>
-        ///     Log In
+        ///     Register
         /// </summary>
         /// <param name="userDTO"></param>
         /// <returns>User</returns>
+        [Route("register")]
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
+        {
+            var controllerAction = GetControllerActionNames();
+
+            try
+            {
+                var emailAddress = userDTO.EmailAddress;
+                var password = userDTO.Password;
+                var username = userDTO.EmailAddress;
+                var user = new IdentityUser {Email = emailAddress, UserName = username};
+
+                _logger.LogInfo($"{controllerAction}: Attempted For User With Email Address \"{emailAddress}\"");
+                var result = await _userManager.CreateAsync(user, password);
+
+                if (!result.Succeeded)
+                {
+                    _logger.LogError(
+                        $"{controllerAction}: User With Email Address \"{emailAddress}\" Could Not Be Registered");
+
+                    foreach (var error in result.Errors)
+                        _logger.LogError($"{controllerAction}: {error.Description}");
+
+                    return StatusCode(500,
+                        $"{controllerAction}: User With Email Address \"{emailAddress}\" Could Not Be Registered");
+                }
+
+                _logger.LogInfo($"{controllerAction}: Successful For User With Email Address \"{emailAddress}\"");
+                return Ok(user);
+            }
+
+            catch (Exception e)
+            {
+                return InternalError($"{controllerAction}: {e.Message} - {e.InnerException}");
+            }
+        }
+
+        /// <summary>
+        ///     Log In
+        /// </summary>
+        /// <param name="userDTO"></param>
+        /// <returns>Session Token</returns>
+        [Route("login")]
+        [AllowAnonymous]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -55,20 +105,21 @@ namespace API.Controllers
 
             try
             {
-                var username = userDTO.Username;
+                var emailAddress = userDTO.EmailAddress;
                 var password = userDTO.Password;
 
-                _logger.LogInfo($"{controllerAction}: Attempted For User \"{username}\"");
-                var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
+                _logger.LogInfo($"{controllerAction}: Attempted For User With Email Address \"{emailAddress}\"");
+                var result = await _signInManager.PasswordSignInAsync(emailAddress, password, false, false);
 
                 if (!result.Succeeded)
                 {
-                    _logger.LogInfo($"{controllerAction}: User \"{username}\" Not Authenticated");
+                    _logger.LogError(
+                        $"{controllerAction}: User With Email Address \"{emailAddress}\" Not Authenticated");
                     return Unauthorized(userDTO);
                 }
 
-                _logger.LogInfo($"{controllerAction}: Successful For User \"{username}\"");
-                var user = await _userManager.FindByNameAsync(username);
+                _logger.LogInfo($"{controllerAction}: Successful For User With Email Address \"{emailAddress}\"");
+                var user = await _userManager.FindByEmailAsync(emailAddress);
                 var token = await GenerateJSONWebToken(user);
                 return Ok(new {token});
             }

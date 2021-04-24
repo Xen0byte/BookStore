@@ -127,12 +127,19 @@
 				Endpoint For Book Store Authentication
 			</summary>
 		</member>
+		<member name="M:API.Controllers.UsersController.Register(API.DTOs.UserDTO)">
+			<summary>
+				Register
+			</summary>
+			<param name="userDTO"></param>
+			<returns>User</returns>
+		</member>
 		<member name="M:API.Controllers.UsersController.Login(API.DTOs.UserDTO)">
 			<summary>
 				Log In
 			</summary>
 			<param name="userDTO"></param>
-			<returns>User</returns>
+			<returns>Session Token</returns>
 		</member>
 	</members>
 </doc>
