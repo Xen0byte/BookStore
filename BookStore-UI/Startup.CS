@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UI.Contracts;
-using UI.Data;
 using UI.Services;
 
 namespace UI
@@ -24,7 +23,6 @@ namespace UI
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddHttpClient();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
         }

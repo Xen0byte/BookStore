@@ -86,6 +86,7 @@ namespace API
         }
 
         // This Method Gets Called By The Runtime. Use This Method To Configure The HTTP Request Pipeline.
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {

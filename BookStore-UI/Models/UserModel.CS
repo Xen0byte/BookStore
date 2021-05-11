@@ -29,5 +29,16 @@ namespace UI.Models
 
     public class UserLoginModel
     {
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
+        [Display(Name = "Email Address")]
+        public string EmailAddress { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [StringLength(48, MinimumLength = 8, ErrorMessage = "The Password Must Be Between {2} And {1} Characters Long")]
+        [Display(Name = "Password")]
+        public string Password { get; set; }
     }
 }
