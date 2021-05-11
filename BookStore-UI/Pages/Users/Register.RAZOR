@@ -1,0 +1,67 @@
+﻿@page "/Register"
+
+@using UI.Contracts
+@using UI.Models
+
+@inject IAuthenticationRepository AuthRepo
+@inject NavigationManager NavMan
+
+<div class="card">
+    <h3 class="card-title">Register Now!</h3>
+
+    @if (_isFailed)
+    {
+        <div class="alert alert-danger">
+            <p>Registration Failed</p>
+        </div>
+    }
+
+    <div class="card-body">
+        <EditForm Model="_userRegistrationModel" OnValidSubmit="HandleRegistration">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <InputText Id="email" class="form-control" @bind-Value="_userRegistrationModel.EmailAddress"/>
+                <ValidationMessage For="@(() => _userRegistrationModel.EmailAddress)"/>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <InputText Id="username" class="form-control" @bind-Value="_userRegistrationModel.Username"/>
+                <ValidationMessage For="@(() => _userRegistrationModel.Username)"/>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <InputText Id="password" type="password" class="form-control" @bind-Value="_userRegistrationModel.Password"/>
+                <ValidationMessage For="@(() => _userRegistrationModel.Password)"/>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <InputText Id="confirm-password" type="password" class="form-control" @bind-Value="_userRegistrationModel.ConfirmationPassword"/>
+                <ValidationMessage For="@(() => _userRegistrationModel.ConfirmationPassword)"/>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private readonly UserRegistrationModel _userRegistrationModel = new();
+    private bool _isFailed;
+
+    private async Task HandleRegistration()
+    {
+        var response = await AuthRepo.Register(_userRegistrationModel);
+
+        if (response)
+        {
+            NavMan.NavigateTo("/");
+        }
+
+        else
+        {
+            _isFailed = true;
+        }
+    }
+
+}

@@ -58,7 +58,7 @@ namespace API.Controllers
             {
                 var emailAddress = userDTO.EmailAddress;
                 var password = userDTO.Password;
-                var username = userDTO.EmailAddress;
+                var username = userDTO.Username;
                 var user = new IdentityUser {Email = emailAddress, UserName = username};
 
                 _logger.LogInfo($"{controllerAction}: Attempted For User With Email Address \"{emailAddress}\"");
