@@ -1,9 +1,13 @@
 ﻿using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using UI.Contracts;
 using UI.Models;
+using UI.Providers;
 using UI.Static;
 
 namespace UI.Services
@@ -11,10 +15,14 @@ namespace UI.Services
     public class AuthenticationRepository : IAuthenticationRepository
     {
         private readonly IHttpClientFactory _client;
+        private readonly ILocalStorageService _localStorage;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public AuthenticationRepository(IHttpClientFactory client)
+        public AuthenticationRepository(IHttpClientFactory client, ILocalStorageService localStorage, AuthenticationStateProvider authenticationStateProvider)
         {
             _client = client;
+            _localStorage = localStorage;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public async Task<bool> LogIn(UserLoginModel user)
@@ -30,16 +38,19 @@ namespace UI.Services
             var content = await response.Content.ReadAsStringAsync();
             var token =  JsonConvert.DeserializeObject<TokenResponseModel>(content);
 
-            // TODO: Store Token
+            await _localStorage.SetItemAsync("authToken", token?.Token);
 
-            // TODO: Change Authentication State Of The Application
+            await ((APIAuthenticationStateProvider) _authenticationStateProvider).LoggedIn();
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token?.Token);
 
             return true;
         }
 
-        public Task LogOut()
+        public async Task LogOut()
         {
-            throw new System.NotImplementedException();
+            await _localStorage.RemoveItemAsync("authToken");
+            ((APIAuthenticationStateProvider)_authenticationStateProvider).LoggedOut();
         }
 
         public async Task<bool> Register(UserRegistrationModel user)
