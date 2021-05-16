@@ -1,15 +1,14 @@
-﻿@page "/Register"
-
+﻿@page "/register"
 @using UI.Contracts
 @using UI.Models
 
 @inject IAuthenticationRepository AuthRepo
-@inject NavigationManager NavMan
+@inject NavigationManager NavManager
 
 <div class="card">
     <h3 class="card-title">Register Now!</h3>
 
-    @if (_isFailed)
+    @if (!_response)
     {
         <div class="alert alert-danger">
             <p>Registration Failed</p>
@@ -40,28 +39,21 @@
                 <InputText Id="confirm-password" type="password" class="form-control" @bind-Value="_userRegistrationModel.ConfirmationPassword"/>
                 <ValidationMessage For="@(() => _userRegistrationModel.ConfirmationPassword)"/>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
         </EditForm>
     </div>
 </div>
 
 @code {
     private readonly UserRegistrationModel _userRegistrationModel = new();
-    private bool _isFailed;
+    private bool _response = true;
 
     private async Task HandleRegistration()
     {
-        var response = await AuthRepo.Register(_userRegistrationModel);
+        _response = await AuthRepo.Register(_userRegistrationModel);
 
-        if (response)
-        {
-            NavMan.NavigateTo("/");
-        }
-
-        else
-        {
-            _isFailed = true;
-        }
+        if (_response)
+            NavManager.NavigateTo("/login");
     }
 
 }

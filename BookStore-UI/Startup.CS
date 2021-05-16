@@ -1,11 +1,13 @@
+using System.IdentityModel.Tokens.Jwt;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IdentityModel.Tokens.Jwt;
 using UI.Contracts;
+using UI.Providers;
 using UI.Services;
 
 namespace UI
@@ -27,6 +29,9 @@ namespace UI
             services.AddServerSideBlazor();
             services.AddBlazoredLocalStorage();
             services.AddHttpClient();
+            services.AddScoped<APIAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(provider =>
+                provider.GetRequiredService<APIAuthenticationStateProvider>());
             services.AddScoped<JwtSecurityTokenHandler>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
         }

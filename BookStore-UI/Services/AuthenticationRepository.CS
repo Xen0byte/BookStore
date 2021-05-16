@@ -14,11 +14,12 @@ namespace UI.Services
 {
     public class AuthenticationRepository : IAuthenticationRepository
     {
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly IHttpClientFactory _client;
         private readonly ILocalStorageService _localStorage;
-        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public AuthenticationRepository(IHttpClientFactory client, ILocalStorageService localStorage, AuthenticationStateProvider authenticationStateProvider)
+        public AuthenticationRepository(IHttpClientFactory client, ILocalStorageService localStorage,
+            AuthenticationStateProvider authenticationStateProvider)
         {
             _client = client;
             _localStorage = localStorage;
@@ -36,7 +37,7 @@ namespace UI.Services
             if (!response.IsSuccessStatusCode) return false;
 
             var content = await response.Content.ReadAsStringAsync();
-            var token =  JsonConvert.DeserializeObject<TokenResponseModel>(content);
+            var token = JsonConvert.DeserializeObject<TokenResponseModel>(content);
 
             await _localStorage.SetItemAsync("authToken", token?.Token);
 
@@ -50,7 +51,7 @@ namespace UI.Services
         public async Task LogOut()
         {
             await _localStorage.RemoveItemAsync("authToken");
-            ((APIAuthenticationStateProvider)_authenticationStateProvider).LoggedOut();
+            ((APIAuthenticationStateProvider) _authenticationStateProvider).LoggedOut();
         }
 
         public async Task<bool> Register(UserRegistrationModel user)

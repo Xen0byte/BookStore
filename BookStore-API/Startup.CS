@@ -93,7 +93,10 @@ namespace API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                #pragma warning disable CS0618 // Type Or Member Is Obsolete
                 app.UseDatabaseErrorPage();
+                #pragma warning restore CS0618 // Type Or Member Is Obsolete
             }
             else
             {
