@@ -44,7 +44,7 @@ namespace UI.Providers
                 return new AuthenticationState(user);
             }
 
-            catch
+            catch (Exception)
             {
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }

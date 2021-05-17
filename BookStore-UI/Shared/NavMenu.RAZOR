@@ -12,12 +12,12 @@
                 <li class="nav-item px-3">
                     <NavLink class="nav-link">
                         <span class="oi oi-person" aria-hidden="true"></span>
-                        <span>@context.User.Identity.Name</span>
+                        <span>@context.User.Identity?.Name</span>
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="logout">
-                        <span class="oi oi-person" aria-hidden="true"></span>
+                        <span class="oi oi-arrow-circle-left" aria-hidden="true"></span>
                         <span>Log Out</span>
                     </NavLink>
                 </li>
@@ -55,6 +55,22 @@
                 <span>Books</span>
             </NavLink>
         </li>
+        <AuthorizeView Roles="Customer">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="books">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span>
+                    <span>CUSTOMER LINK</span>
+                </NavLink>
+            </li>
+        </AuthorizeView>
+        <AuthorizeView Roles="Administrator">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="books">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span>
+                    <span>ADMIN LINK</span>
+                </NavLink>
+            </li>
+        </AuthorizeView>
     </ul>
 </div>
 

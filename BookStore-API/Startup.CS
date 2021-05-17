@@ -100,7 +100,7 @@ namespace API
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts(); // The Default HSTS Value Is 30 Days. You May Want To Change This For Production Scenarios. (https://aka.ms/aspnetcore-hsts)
             }
 
